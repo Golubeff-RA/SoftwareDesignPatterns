@@ -38,10 +38,10 @@ public:
         try {
             for (auto teacher_says = teacher_->Talk(); teacher_says != std::nullopt;
                  teacher_says = teacher_->Talk()) {
-                ++sym_cnt;
                 for (auto& stud : students_) {
                     stud->Listen(teacher_says.value());
                 }
+                ++sym_cnt;
             }
         } catch (...) {
             return std::unexpected("Something went wrong in auditory " + std::to_string(number_));

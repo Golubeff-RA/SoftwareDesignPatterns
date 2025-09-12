@@ -23,13 +23,12 @@ int main() {
 
     auto result = auditory.StartLection();
     if (result.has_value()) {
-        std::cout << "Lecture completetd! Total syms sayed: " << result.value() << std::endl;
+        std::cout << "Lecture completed! Total syms sayed: " << result.value() << std::endl;
         std::cout << st3->GetName() << " writed: " << st3->GetNotebook() << std::endl;
         std::cout << st7->GetName() << " writed: " << st7->GetNotebook() << std::endl;
     } else {
         std::cout << result.error();
     }
-
 
     return 0;
 }
