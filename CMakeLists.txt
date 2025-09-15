@@ -26,3 +26,4 @@ message("Release build compiler flags: " ${CMAKE_CXX_FLAGS_REL})
 
 add_subdirectory(hw1)
 add_subdirectory(practice1)
+add_subdirectory(practice1_static)

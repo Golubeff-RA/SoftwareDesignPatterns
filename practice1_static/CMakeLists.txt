@@ -1,0 +1,2 @@
+add_executable(practice1_static main.cpp)
+target_include_directories(practice1_static PUBLIC include)

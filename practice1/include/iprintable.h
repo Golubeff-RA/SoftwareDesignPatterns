@@ -3,23 +3,18 @@
 
 class IPrintable {
 public:
-    virtual void Print(PrinterPtr printer) const {
-    };
+    virtual void Print(PrinterPtr printer) const = 0;
 };
 
 using PrintablePtr = std::shared_ptr<IPrintable>;
 
 class Word : public IPrintable {
 public:
-    explicit Word(const std::string& data) : data_(data) {
-    }
+    explicit Word(const std::string& data);
 
-    explicit Word(std::string&& data) : data_(data) {
-    }
+    explicit Word(std::string&& data);
 
-    void Print(PrinterPtr printer) const override {
-        printer->Print(data_);
-    }
+    void Print(PrinterPtr printer) const override;
 
 private:
     std::string data_;
@@ -27,11 +22,10 @@ private:
 
 class Sign : public IPrintable {
 public:
-    explicit Sign(char sym = 0) : sym_(sym) {}
-    
-    void Print (PrinterPtr printer) const override {
-        printer->Print(sym_);
-    }
+    explicit Sign(char sym = 0);
+
+    void Print(PrinterPtr printer) const override;
+
 private:
     char sym_;
 };
