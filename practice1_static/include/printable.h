@@ -21,16 +21,21 @@ template <typename... Args>
 class Text {
 public:
     Text(Args&&... args) : data_(std::forward<Args>(args)...) {}
+    template <class Printer>
+    void Print() const {
+        RecursivePrint<Printer, 0>();
+    }
+
+private:
     template <class Printer, size_t Idx>
-    void PrintText() const {
+    void RecursivePrint() const {
         if constexpr (Idx >= std::tuple_size_v<decltype(data_)>) {
             return;
         } else {
             std::get<Idx>(data_).Print(Printer());
-            return PrintText<Printer, Idx + 1>();
+            return RecursivePrint<Printer, Idx + 1>();
         }
     }
 
-private:
     std::tuple<Args...> data_;
 };

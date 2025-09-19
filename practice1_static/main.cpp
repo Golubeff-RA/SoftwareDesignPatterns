@@ -4,10 +4,10 @@
 int main() {
     Text text(IPrintable("Testing"), IPrintable(' '), IPrintable("of"), IPrintable(' '),
               IPrintable("my"), IPrintable(' '), IPrintable("architecture"), IPrintable('!'));
-    text.PrintText<PrinterDefault, 0>();
+    text.Print<PrinterDefault>();
     std::cout << std::endl;
-    text.PrintText<PrinterWithScobes, 0>();
+    text.Print<PrinterWithScobes>();
     std::cout << std::endl;
-    text.PrintText<PrinterWithEndl, 0>();
+    text.Print<PrinterWithEndl>();
     return 0;
 }

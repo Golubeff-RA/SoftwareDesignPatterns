@@ -24,6 +24,9 @@ message("ASAN build compiler flags: " ${CMAKE_CXX_FLAGS_ASAN})
 message("TSAN build compiler flags: " ${CMAKE_CXX_FLAGS_TSAN})
 message("Release build compiler flags: " ${CMAKE_CXX_FLAGS_REL})
 
+
+
 add_subdirectory(hw1)
 add_subdirectory(practice1)
 add_subdirectory(practice1_static)
+add_subdirectory(practice2)
