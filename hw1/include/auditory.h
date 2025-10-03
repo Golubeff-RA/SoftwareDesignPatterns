@@ -5,23 +5,31 @@
 #include "student.h"
 #include "teacher.h"
 
-using StudentPtr = std::shared_ptr<IStudent>;
-using TeacherPtr = std::shared_ptr<Teacher>;
 // результат лекции, если всё ок, то вернёт число прочитанных символов, иначе строку с ошибкой
 using LectureResult = std::expected<size_t, std::string>;
 
-class Auditory {
+class Auditory : public Human{
 public:
-    Auditory(size_t number = 0) : number_(number) {}
+    Auditory(const std::string& name) : Human(name){}
 
-    void SetTeacher(TeacherPtr teacher) { teacher_ = teacher; }
+    SpeakResult Speak() override {
+        return std::nullopt;
+    }
 
-    void AddStudent(StudentPtr student) { students_.push_back(student); }
+    void Listen(SpeakResult sym) override {
+        for (auto& human : humans_) {
+            human->Listen(sym);
+        }
+    }
 
-    bool DelStudent(const std::string& name) {
-        for (auto it = students_.begin(); it != students_.end(); ++it) {
+    void AddHuman(HumanPtr human_ptr) {
+        humans_.push_back(human_ptr);
+    }
+
+    bool DelHuman(const std::string& name) {
+        for (auto it = humans_.begin(); it != humans_.end(); ++it) {
             if ((*it)->GetName() == name) {
-                students_.erase(it);
+                humans_.erase(it);
                 return true;
             }
         }
@@ -29,29 +37,23 @@ public:
         return false;
     }
 
-    size_t GetNumber() const { return number_; }
-
-    std::list<StudentPtr> GetStutents() const { return students_; }
-
     LectureResult StartLection() {
-        size_t sym_cnt = 0;
-        try {
-            for (auto teacher_says = teacher_->Talk(); teacher_says != std::nullopt;
-                 teacher_says = teacher_->Talk()) {
-                for (auto& stud : students_) {
-                    stud->Listen(teacher_says.value());
+        size_t cnt_sended = 0;
+        bool non_nullopt = false;
+        do {
+            non_nullopt = false;
+            for (auto& human : humans_) {
+                SpeakResult res = human->Speak();
+                if (res.has_value()) {
+                    non_nullopt = true;
+                    ++cnt_sended;
                 }
-                ++sym_cnt;
+                Listen(res);
             }
-        } catch (...) {
-            return std::unexpected("Something went wrong in auditory " + std::to_string(number_));
-        }
+        } while(non_nullopt);
 
-        return sym_cnt;
+        return LectureResult(cnt_sended);
     }
-
 private:
-    size_t number_;
-    std::list<StudentPtr> students_;
-    TeacherPtr teacher_ = nullptr;
+    std::list<HumanPtr> humans_;
 };

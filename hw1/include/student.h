@@ -3,11 +3,17 @@
 
 #include "human.h"
 
-class IStudent : public IHuman {
+class Student : public Human {
 public:
-    explicit IStudent(const std::string& name) : IHuman(name) {}
+    explicit Student(const std::string& name) : Human(name) {}
 
-    virtual void Listen(char sym = 0) { notebook_.push_back(sym); }
+    void Listen(SpeakResult sym) override {
+        if (sym.has_value()) { 
+            notebook_.push_back(sym.value()); 
+        }
+    }
+
+    SpeakResult Speak() override { return std::nullopt; }
 
     virtual std::string GetNotebook() const {
         std::string result;
@@ -23,10 +29,11 @@ private:
     std::list<char> notebook_;
 };
 
-class NikitaStudent : public IStudent {
+class NikitaStudent : public Student {
 public:
-    NikitaStudent() : IStudent("Nikita") {}
-    void Listen(char sym = 0) override {}
+    NikitaStudent() : Student("Nikita") {}
+
+    void Listen(SpeakResult sym = 0) override {}
 
     std::string GetNotebook() const override {
         return std::string("I am Nikita. I know everything :-)");

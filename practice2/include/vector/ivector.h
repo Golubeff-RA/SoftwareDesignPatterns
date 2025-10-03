@@ -1,7 +1,8 @@
 #pragma once
 
-#include "vector/ivector.h"
+#include <memory>
 
+#include "vector/ivector.h"
 namespace my_math_lib {
 template <typename T>
 class IVector {
@@ -11,4 +12,7 @@ public:
     virtual T& operator[](size_t idx) = 0;
     virtual ~IVector() = default;
 };
+
+template <typename T>
+using VectorPtr = std::shared_ptr<IVector<T>>;
 }  // namespace my_math_lib

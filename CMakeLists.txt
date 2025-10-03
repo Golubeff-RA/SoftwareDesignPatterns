@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.5.0)
 
+project(SoftwareDesignPatterns)
+
 set (CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -g")
@@ -23,8 +25,6 @@ message("Debug build compiler flags: " ${CMAKE_CXX_FLAGS_DEBUG})
 message("ASAN build compiler flags: " ${CMAKE_CXX_FLAGS_ASAN})
 message("TSAN build compiler flags: " ${CMAKE_CXX_FLAGS_TSAN})
 message("Release build compiler flags: " ${CMAKE_CXX_FLAGS_REL})
-
-
 
 add_subdirectory(hw1)
 add_subdirectory(practice1)

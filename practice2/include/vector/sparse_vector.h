@@ -12,14 +12,14 @@ public:
     size_t Size() const override { return size_; }
 
     T operator[](size_t idx) const override {
-        if (!data_.contains(idx)) {
+        if (!data_.contains(idx) && idx < size_) {
             return T{};
         }
         return data_.at(idx);
     }
 
     T& operator[](size_t idx) override {
-        if (!data_.contains(idx)) {
+        if (!data_.contains(idx) && idx < size_) {
             data_.insert({idx, T{}});
         }
 

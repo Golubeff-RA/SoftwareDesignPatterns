@@ -1,21 +1,20 @@
 #pragma once
 #include "human.h"
-#include "optional"
 
-using TalkResult = std::optional<char>;
-
-class Teacher : public IHuman {
+class Teacher : public Human {
 public:
     Teacher(const std::string& name, const std::string& lecture)
-        : IHuman(name), lecture_(lecture), iter_(lecture_.begin()) {}
+        : Human(name), lecture_(lecture), iter_(lecture_.begin()) {}
 
-    TalkResult Talk() {
+    SpeakResult Speak() override {
         if (iter_ == lecture_.end()) {
             return std::nullopt;
         }
 
         return *(iter_++);
     }
+
+    void Listen(SpeakResult sym) override {}
 
 private:
     std::string lecture_;

@@ -10,10 +10,10 @@
 using namespace my_math_lib;
 
 int main() {
-    MatrixPtr<double> matrix_classic = MatrixPtr<double>(new Matrix<double>(10, 10));
-    MatrixPtr<double> matrix_sparse = MatrixPtr<double>(new Matrix<double>(5, 10));
+    MatrixPtr matrix_classic = MatrixPtr<double>(new Matrix<double>(10, 10));
+    MatrixPtr matrix_sparse = MatrixPtr<double>(new SparseMatrix<double>(5, 10));
 
-    MatrixInitializer::FillMatrix(matrix_classic, 100, 20.0);
+    MatrixInitializer::FillMatrix(matrix_classic, 33, 30.0);
     MatrixInitializer::FillMatrix(matrix_sparse, 20, 100.0);
 
     StatisticOfMatrix stat_classic(matrix_classic);
