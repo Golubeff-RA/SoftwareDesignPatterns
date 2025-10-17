@@ -5,7 +5,8 @@
 #include "vector/vector.h"
 
 namespace my_math_lib {
-template <typename T>
+
+template <typename T, typename Vec, typename VecOfVec>
 class AMatrix : public IMatrix<T> {
 protected:
     VectorPtr<VectorPtr<T>> data_;
@@ -13,8 +14,10 @@ protected:
     size_t cols_ = 0;
 
 public:
-    AMatrix(size_t rows = 0, size_t cols = 0) : rows_(rows), cols_(cols) {}
-
+    AMatrix(size_t rows = 0, size_t cols = 0) : rows_(rows), cols_(cols) {
+        InitVec<VecOfVec, VectorPtr<VectorPtr<T>>>(rows, data_);
+    }
+        
     size_t Rows() const override { return rows_; }
 
     size_t Columns() const override { return Rows() > 0 ? cols_ : 0; }
@@ -27,16 +30,17 @@ public:
     }
 
     T& operator()(size_t row, size_t col) override {
+        if (this->data_->operator[](row) == nullptr && row < this->rows_) {
+            InitVec<Vec, VectorPtr<T>>(this->cols_, this->data_->operator[](row));
+        }
         return data_->operator[](row)->operator[](col);
-    }
+    } 
 };
 
-template <typename T, typename Vec, typename VecOfVec>
-void InitVecOfVecs(size_t rows, size_t cols, VectorPtr<VectorPtr<T>>& data_) {
-    data_ = VectorPtr<VectorPtr<T>>(new VecOfVec(rows));
-    for (size_t i = 0; i < rows; ++i) {
-        data_->operator[](i) = VectorPtr<T>(new Vec(cols));
-    }
+template <typename Vec, typename VecPtr> 
+void InitVec(size_t size, VecPtr& data){
+    data = VecPtr(new Vec(size));
 }
+
 
 }  // namespace my_math_lib

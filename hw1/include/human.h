@@ -7,7 +7,7 @@ using SpeakResult = std::optional<char>;
 
 class Human {
 public:
-    explicit Human(const std::string& name) : name_(name) {}
+    explicit Human(const std::string& name) {}
 
     std::string GetName() const { return name_; }
 

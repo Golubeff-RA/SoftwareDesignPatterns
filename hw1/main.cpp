@@ -2,41 +2,38 @@
 
 #include "auditory.h"
 
-int main() {
+void Scenary() {
     HumanPtr teacher(new Teacher("Starostin Nikolai Vladimirovich", "Hello world!"));
-    HumanPtr st1(new Student("Roman"));
-    HumanPtr st2(new Student("Daniil"));
-    HumanPtr st3(new Student("Vladimir"));
-    HumanPtr st4(new Student("Maksim"));
-    HumanPtr st5(new Student("Sasha"));
-    HumanPtr st6(new Student("Nikita"));
-    HumanPtr st7(new NikitaStudent());
+    HumanPtr roman(new Student("Roman"));
+    HumanPtr daniil(new Student("Daniil"));
+    HumanPtr vladimir(new Student("Vladimir"));
+    HumanPtr maksim(new Student("Maksim"));
+    HumanPtr sasha(new Student("Sasha"));
+    HumanPtr nikita(new Student("Nikita"));
+    HumanPtr nikita_2(new NikitaStudent());
 
     Auditory auditory("112");
-    auditory.AddHuman(teacher);
-    auditory.AddHuman(st1);
-    auditory.AddHuman(st2);
-    auditory.AddHuman(st4);
-    auditory.AddHuman(st5);
-    auditory.AddHuman(st6);
-    auditory.AddHuman(st7);
+    auditory.AddHumans({teacher, roman, daniil, maksim, sasha, nikita, nikita_2});
 
     HumanPtr auditory_zoom(new Auditory("zoom"));
-    std::dynamic_pointer_cast<Auditory>(auditory_zoom)->AddHuman(st3);
+    std::dynamic_pointer_cast<Auditory>(auditory_zoom)->AddHuman(vladimir);
     auditory.AddHuman(auditory_zoom);
 
     auto result = auditory.StartLection();
     if (result.has_value()) {
         std::cout << "Lecture completed! Total syms sayed: " << result.value() << std::endl;
-        std::cout << st3->GetName()
-                  << " writed: " << std::dynamic_pointer_cast<Student>(st3)->GetNotebook()
+        for (const auto& student : {roman, vladimir, daniil, maksim, sasha, nikita, nikita_2}) {
+            std::cout << student->GetName()
+                  << " writed: " << std::dynamic_pointer_cast<Student>(student)->GetNotebook()
                   << std::endl;
-        std::cout << st7->GetName()
-                  << " writed: " << std::dynamic_pointer_cast<Student>(st7)->GetNotebook()
-                  << std::endl;
+        }
     } else {
         std::cout << result.error();
     }
+}
 
+
+int main() {
+    Scenary();
     return 0;
 }

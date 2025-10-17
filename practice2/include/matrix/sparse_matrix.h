@@ -5,17 +5,9 @@
 
 namespace my_math_lib {
 template <typename T>
-class SparseMatrix : public AMatrix<T> {
+class SparseMatrix : public AMatrix<T, SparseVector<T>, SparseVector<VectorPtr<T>>> {
 public:
-    SparseMatrix(size_t rows, size_t cols) : AMatrix<T>(rows, cols) {
-        this->data_ = VectorPtr<VectorPtr<T>>(new SparseVector<VectorPtr<T>>(rows));
-    }
-
-    T& operator()(size_t row, size_t col) override {
-        if (this->data_->operator[](row) == nullptr && row < this->rows_) {
-            this->data_->operator[](row) = VectorPtr<T>(new SparseVector<T>(this->cols_));
-        }
-        return this->data_->operator[](row)->operator[](col);
+    SparseMatrix(size_t rows, size_t cols) : AMatrix<T, SparseVector<T>, SparseVector<VectorPtr<T>>>(rows, cols) {
     }
 };
 }  // namespace my_math_lib
