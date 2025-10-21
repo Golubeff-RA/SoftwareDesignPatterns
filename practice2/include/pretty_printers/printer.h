@@ -1,6 +1,6 @@
 #pragma once
 #include <statistica/statistica.h>
-
+#include <iomanip>
 #include <concepts>
 namespace my_math_lib {
 

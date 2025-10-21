@@ -20,4 +20,19 @@ public:
         }
     }
 };
+
+class MatrixZeroer {
+public:
+    template <typename T>
+    static void ZeroMatrix(MatrixPtr<T> matrix) {
+        for(size_t i = 0; i < matrix.get()->Rows(); ++i) {
+            for (size_t j = 0; j < matrix.get()->Columns(); ++j) {
+                if (matrix.get()->operator()(i, j) != T{}) {
+                    matrix.get()->operator()(i, j) = T{};
+                }
+            }
+        }
+    }
+};
+
 }  // namespace my_math_lib

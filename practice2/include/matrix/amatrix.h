@@ -8,7 +8,7 @@ namespace my_math_lib {
 
 template <typename T, typename Vec, typename VecOfVec>
 class AMatrix : public IMatrix<T> {
-protected:
+private:
     VectorPtr<VectorPtr<T>> data_;
     size_t rows_ = 0;
     size_t cols_ = 0;
@@ -23,7 +23,7 @@ public:
     size_t Columns() const override { return Rows() > 0 ? cols_ : 0; }
 
     T operator()(size_t row, size_t col) const override {
-        if (this->data_->operator[](row) == nullptr) {
+        if (this->data_->operator[](row) == nullptr && row < this->rows_) {
             return T{};
         }
         return data_->operator[](row)->operator[](col);
