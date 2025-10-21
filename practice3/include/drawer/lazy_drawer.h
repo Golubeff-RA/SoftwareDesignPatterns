@@ -2,8 +2,10 @@
 
 #include <drawer/default_drawer.h>
 
-class LazyDrawer: public DefaultDrawer {
+class LazyDrawer : public DefaultDrawer {
 public:
-    void DrawLine(ImDrawList* draw_list, ImVec2 start, ImVec2 end) const override {
-    }
+    LazyDrawer(ImDrawList* draw_list, std::ostream& out, ImVec2 init_pos)
+        : DefaultDrawer(draw_list, out, init_pos) {}
+    void DrawLine(ImVec2, ImVec2) override {}
+    void DrawBorder(char) override {}
 };

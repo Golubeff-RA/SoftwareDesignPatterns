@@ -9,58 +9,82 @@
 #include "initializers/matrix_initializer.h"
 #include "matrix/matrix.h"
 #include "matrix/sparse_matrix.h"
-#include "matrix_drawer/dense_matrix_drawer.h"
-#include "matrix_drawer/sparse_matrix_drawer.h"
-#include "pretty_printers/printer.h"
+#include "matrix_drawer/console_matrix_drawer.h"
+#include "matrix_drawer/graph_matrix_drawer.h"
+#include "serializers/serializers.h"
 
 using namespace my_math_lib;
 
 void Practice3Render() {
-    static MatrixPtr<int> dense_matrix = nullptr;
-    static MatrixPtr<int> sparse_matrix = nullptr;
+    static bool border_option = true;
 
-    static DrawerPtr drawer = DrawerPtr(new DefaultDrawer());
-    static DenseMatrixDrawer<int> dense_m_drawer;
-    static SparseMatrixDrawer<int> sparse_m_drawer;
+    static SerializerPtr serializer_for_dense = SerializerPtr<float>(new DenseSerializer<float>());
+    static SerializerPtr serializer_for_sparse =
+        SerializerPtr<float>(new SparseSerializer<float>());
+
+    static MatrixPtr<float> dense_matrix = nullptr;
+    static MatrixPtr<float> sparse_matrix = nullptr;
+
+    static DrawerPtr drawer_for_dense = nullptr;
+    static DrawerPtr drawer_for_sparse = nullptr;
+    static GrapicalMatrixDrawer<float> graph_drawer;
+    static ConsoleMatrixDrawer<float> console_drawer;
 
     static ImVec2 window_pos;
     static ImVec2 window_size;
 
-    ImGui::Begin("User Interface for LAB2");
+    size_t changes_count = 0;
+
+    ImGui::Begin("User floaterface for LAB2");
 
     window_pos = ImGui::GetWindowPos();
     window_size = ImGui::GetWindowSize();
     if (ImGui::Button("  Generate\ndense matrix", ImVec2(120, 36))) {
-        dense_matrix = MatrixPtr<int>(new Matrix<int>(10, 10));
-        MatrixInitializer::FillMatrix<int>(dense_matrix, 30, 300);
+        dense_matrix = MatrixPtr<float>(new Matrix<float>(15, 4));
+        MatrixInitializer::FillMatrix<float>(dense_matrix, 30, 1000);
+        ++changes_count;
     }
 
     ImGui::SameLine();
     if (ImGui::Button("  Generate\nsparce matrix", ImVec2(120, 36))) {
-        sparse_matrix = MatrixPtr<int>(new Matrix<int>(10, 10));
-        MatrixInitializer::FillMatrix<int>(sparse_matrix, 30, 300);
-    }
-
-    ImGui::SameLine();
-    if (ImGui::Button("  Border\n optinon", ImVec2(120, 36))) {
-        if (std::dynamic_pointer_cast<LazyDrawer>(drawer) == nullptr) {
-            drawer = DrawerPtr(new LazyDrawer());
-        } else {
-            drawer = DrawerPtr(new DefaultDrawer());
-        }   
+        sparse_matrix = MatrixPtr<float>(new Matrix<float>(15, 4));
+        MatrixInitializer::FillMatrix<float>(sparse_matrix, 40, 1000);
+        ++changes_count;
     }
 
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    ImGui::SameLine();
+    if (ImGui::Button("  Border\n optinon", ImVec2(120, 36))) {
+        border_option = !border_option;
+        ++changes_count;
+    }
+
+    if (border_option) {
+        drawer_for_dense = DrawerPtr(
+            new DefaultDrawer(draw_list, std::cout, ImVec2(window_pos.x + 12, window_pos.y + 84)));
+        drawer_for_sparse = DrawerPtr(
+            new DefaultDrawer(draw_list, std::cout,
+                              ImVec2(window_pos.x + 12 + window_size.x / 2, window_pos.y + 84)));
+    } else {
+        drawer_for_dense = DrawerPtr(
+            new LazyDrawer(draw_list, std::cout, ImVec2(window_pos.x + 12, window_pos.y + 84)));
+        drawer_for_sparse = DrawerPtr(
+            new LazyDrawer(draw_list, std::cout,
+                           ImVec2(window_pos.x + 12 + window_size.x / 2, window_pos.y + 84)));
+    }
 
     if (dense_matrix != nullptr) {
-        dense_m_drawer.DrawMatrix(dense_matrix, draw_list,
-                                  ImVec2(window_pos.x + 12, window_pos.y + 84), drawer);
+        graph_drawer.DrawMatrix(dense_matrix, drawer_for_dense, serializer_for_dense);
+        if (changes_count != 0) {
+            console_drawer.DrawMatrix(dense_matrix, drawer_for_dense, serializer_for_dense);
+        }
     }
 
     if (sparse_matrix != nullptr) {
-        sparse_m_drawer.DrawMatrix(sparse_matrix, draw_list,
-                                   ImVec2(window_pos.x + 12 + window_size.x / 2, window_pos.y + 84),
-                                   drawer);
+        graph_drawer.DrawMatrix(sparse_matrix, drawer_for_sparse, serializer_for_sparse);
+        if (changes_count != 0) {
+            console_drawer.DrawMatrix(sparse_matrix, drawer_for_sparse, serializer_for_sparse);
+        }
     }
     ImGui::End();
 }

@@ -4,8 +4,11 @@
 
 class IDrawer {
 public:
-    virtual void DrawLine(ImDrawList* draw_list, ImVec2 start, ImVec2 end) const = 0;
-    virtual void DrawText(ImDrawList* draw_list, ImVec2 pos, const char* value) const = 0;
+    virtual ImVec2 GetPos() const = 0;
+    virtual void DrawLine(ImVec2 start, ImVec2 end) = 0;
+    virtual void DrawText(ImVec2 pos, const char* value) = 0;
+    virtual void DrawText(const char* value) = 0;
+    virtual void DrawBorder(char sym) = 0;
     virtual ~IDrawer() = default;
 };
 
