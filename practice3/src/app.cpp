@@ -94,7 +94,6 @@ void App::MainLoop() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         m_renderCallback();
-
         ImGui::Render();
 
         int display_w, display_h;
