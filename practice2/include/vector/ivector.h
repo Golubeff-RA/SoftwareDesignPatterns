@@ -1,8 +1,6 @@
 #pragma once
-
 #include <memory>
 
-#include "vector/ivector.h"
 namespace my_math_lib {
 template <typename T>
 class IVector {

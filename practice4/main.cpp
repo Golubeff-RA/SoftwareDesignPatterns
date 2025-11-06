@@ -1,8 +1,9 @@
+#include <initializers/matrix_initializer.h>
 #include <matrix/matrix.h>
 #include <matrix/sparse_matrix.h>
-#include <swap_decorator.h>
 #include <pretty_printers/printer.h>
-#include <initializers/matrix_initializer.h>
+#include <swap_decorator.h>
+
 #include <iostream>
 
 using namespace my_math_lib;

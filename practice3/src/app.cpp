@@ -1,6 +1,5 @@
 #include "app/app.h"
 
-#include <chrono>
 #include <iostream>
 
 void GLFWErrorCallback(int error, const char* description) {

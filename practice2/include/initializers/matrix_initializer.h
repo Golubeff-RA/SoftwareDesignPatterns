@@ -13,9 +13,9 @@ public:
         while (not_zero < not_zero_cnt) {
             size_t i = idx_gena.Generate(0, matrix.get()->Rows() - 1);
             size_t j = idx_gena.Generate(0, matrix.get()->Columns() - 1);
-            if (matrix.get()->operator()(i, j) == T{}) {
+            if ((*matrix)[i, j] == T{}) {
                 ++not_zero;
-                matrix->operator()(i, j) = gena.Generate(T{}, max_value);
+                (*matrix)[i, j] = gena.Generate(T{}, max_value);
             }
         }
     }
@@ -25,10 +25,10 @@ class MatrixZeroer {
 public:
     template <typename T>
     static void ZeroMatrix(MatrixPtr<T> matrix) {
-        for(size_t i = 0; i < matrix.get()->Rows(); ++i) {
+        for (size_t i = 0; i < matrix.get()->Rows(); ++i) {
             for (size_t j = 0; j < matrix.get()->Columns(); ++j) {
-                if (matrix.get()->operator()(i, j) != T{}) {
-                    matrix.get()->operator()(i, j) = T{};
+                if ((*matrix)[i, j] != T{}) {
+                    (*matrix)[i, j] = T{};
                 }
             }
         }

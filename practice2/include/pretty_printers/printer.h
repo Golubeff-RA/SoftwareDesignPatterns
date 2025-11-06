@@ -1,7 +1,8 @@
 #pragma once
 #include <statistica/statistica.h>
-#include <iomanip>
+
 #include <concepts>
+#include <iomanip>
 namespace my_math_lib {
 
 template <typename T>
@@ -17,19 +18,19 @@ public:
         out << "Размер: " << matrix->Rows() << 'x' << matrix->Columns() << std::endl;
         for (size_t i = 0; i < matrix->Rows(); ++i) {
             for (size_t j = 0; j < matrix.get()->Columns(); ++j) {
-                out << std::setw(8) << matrix->operator()(i, j) << ' ';
+                out << std::setw(8) << (*matrix)[i, j] << ' ';
             }
             out << std::endl;
         }
     }
 
     template <Printable T>
-    static void PrintStatistics(const StatisticOfMatrix<T>& statistics, std::ostream& out) {
+    static void PrintStatistics(const Metrics<T>& metrics, std::ostream& out) {
         out << "Статистика по матрице:\n";
-        out << "Сумма значений           : " << statistics.Sum() << std::endl;
-        out << "Среднее значение         : " << statistics.Avg() << std::endl;
-        out << "Макс. значение           : " << statistics.Max() << std::endl;
-        out << "Число ненулевых элементов: " << statistics.NonZeroCnt() << std::endl;
+        out << "Сумма значений           : " << metrics.sum << std::endl;
+        out << "Среднее значение         : " << metrics.avg << std::endl;
+        out << "Макс. значение           : " << metrics.max << std::endl;
+        out << "Число ненулевых элементов: " << metrics.non_zero_cnt << std::endl;
     }
 };
 
