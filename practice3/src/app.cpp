@@ -1,6 +1,8 @@
 #include "app/app.h"
 
+#include <chrono>
 #include <iostream>
+#include <thread>
 
 void GLFWErrorCallback(int error, const char* description) {
     std::cerr << "GLFW Error " << error << ": " << description << std::endl;
@@ -31,7 +33,8 @@ bool App::InitGLFW() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+    m_window =
+        glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
     if (!m_window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -66,7 +69,9 @@ bool App::InitImGUI() {
     return true;
 }
 
-void App::SetClearColor(float r, float g, float b, float a) { m_clearColor = ImVec4(r, g, b, a); }
+void App::SetClearColor(float r, float g, float b, float a) {
+    m_clearColor = ImVec4(r, g, b, a);
+}
 
 int App::Run() {
     if (!InitGLFW()) {
@@ -88,17 +93,25 @@ int App::Run() {
 
 void App::MainLoop() {
     while (!glfwWindowShouldClose(m_window)) {
+        auto frame_start = std::chrono::steady_clock::now();
+        glfwSwapInterval(1);
         glfwPollEvents();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         m_renderCallback();
+        ImGui::Begin("Info");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+                    1000.0f / ImGui::GetIO().Framerate,
+                    ImGui::GetIO().Framerate);
+        ImGui::End();
         ImGui::Render();
 
         int display_w, display_h;
         glfwGetFramebufferSize(m_window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
-        glClearColor(m_clearColor.x * m_clearColor.w, m_clearColor.y * m_clearColor.w,
+        glClearColor(m_clearColor.x * m_clearColor.w,
+                     m_clearColor.y * m_clearColor.w,
                      m_clearColor.z * m_clearColor.w, m_clearColor.w);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -106,12 +119,16 @@ void App::MainLoop() {
 
         glfwSwapBuffers(m_window);
 
-        m_frameCount++;
-        double currentTime = glfwGetTime();
-        if (currentTime - m_lastTime >= 1.0) {
-            m_fps = static_cast<float>(m_frameCount / (currentTime - m_lastTime));
-            m_frameCount = 0;
-            m_lastTime = currentTime;
+        auto frame_end = std::chrono::steady_clock::now();
+        auto frame_time = std::chrono::duration_cast<std::chrono::microseconds>(
+            frame_end - frame_start);
+
+        const int target_fps = 60;
+        const auto target_frame_time =
+            std::chrono::microseconds(1000000 / target_fps);
+
+        if (frame_time < target_frame_time) {
+            std::this_thread::sleep_for(target_frame_time - frame_time);
         }
     }
 }

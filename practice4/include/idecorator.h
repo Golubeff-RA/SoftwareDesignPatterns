@@ -7,6 +7,7 @@ template <typename T>
 class IDecorator : public IMatrix<T> {
 public:
     IDecorator(MatrixPtr<T> matrix) : matrix_(matrix) {}
+    MatrixPtr<T> UnDecorate() { return matrix_; }
 
 protected:
     MatrixPtr<T> matrix_;

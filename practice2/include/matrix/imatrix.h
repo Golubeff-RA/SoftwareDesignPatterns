@@ -10,7 +10,6 @@ public:
     virtual T operator[](size_t row, size_t col) const = 0;
     virtual T& operator[](size_t row, size_t col) = 0;
 };
-
 template <typename T>
 using MatrixPtr = std::shared_ptr<IMatrix<T>>;
 }  // namespace my_math_lib

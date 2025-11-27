@@ -1,5 +1,6 @@
 #pragma once
 #include "drawer/idrawer.h"
+#include "imgui.h"
 
 class DefaultDrawer : public IDrawer {
 public:
@@ -23,6 +24,12 @@ public:
     void DrawText(const char* value) override { this->out_ << value; }
 
     void DrawLine(char sym) override { this->out_ << sym; }
+
+    ImVec2 GetStartPos() const override { return init_pos_; }
+
+    ImDrawList* GetDrawList() const override { return draw_list_; }
+
+    std::ostream& GetOut() override { return out_; }
 
 private:
     ImDrawList* draw_list_;

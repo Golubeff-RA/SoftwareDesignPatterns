@@ -6,16 +6,17 @@
 
 #include <iostream>
 
+#include "transpose_decorator.h"
+
 using namespace my_math_lib;
 
 int main() {
-    MatrixPtr<int> matrix = MatrixPtr<int>(new Matrix<int>(10, 10));
-    MatrixInitializer::FillMatrix<int>(matrix, 20, 300);
-    MatrixPtr<int> decorator_ptr = MatrixPtr<int>(new SwapDecorator<int>(matrix));
+    MatrixPtr<int> matrix = MatrixPtr<int>(new Matrix<int>(2, 6));
+    MatrixInitializer::FillMatrix<int>(matrix, 9, 300);
+    MatrixPtr<int> decorator_ptr =
+        MatrixPtr<int>(new TransposeDecorator<int>(matrix));
     Printer::PrintMatrix<int>(decorator_ptr, std::cout);
-    std::dynamic_pointer_cast<SwapDecorator<int>>(decorator_ptr)->RandomSwap();
-    Printer::PrintMatrix<int>(decorator_ptr, std::cout);
-    std::dynamic_pointer_cast<SwapDecorator<int>>(decorator_ptr)->Repare();
-    Printer::PrintMatrix<int>(decorator_ptr, std::cout);
+    Printer::PrintMatrix<int>(matrix, std::cout);
+
     return 0;
 }

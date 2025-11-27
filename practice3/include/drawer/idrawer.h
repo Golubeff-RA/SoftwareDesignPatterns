@@ -10,6 +10,9 @@ public:
     virtual void DrawText(ImVec2 pos, const char* value) = 0;
     virtual void DrawText(const char* value) = 0;
     virtual ~IDrawer() = default;
+    virtual ImVec2 GetStartPos() const = 0;
+    virtual ImDrawList* GetDrawList() const = 0;
+    virtual std::ostream& GetOut() = 0;
 };
 
 using DrawerPtr = std::shared_ptr<IDrawer>;
