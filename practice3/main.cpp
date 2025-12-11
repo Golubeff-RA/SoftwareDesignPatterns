@@ -5,7 +5,9 @@
 #include <iostream>
 #include <memory>
 
+#include "acommand.h"
 #include "app/app.h"
+#include "command_manager.h"
 #include "drawer/default_drawer.h"
 #include "drawer/idrawer.h"
 #include "drawer/lazy_drawer.h"
@@ -16,6 +18,7 @@
 #include "matrix_drawer/console_matrix_drawer.h"
 #include "matrix_drawer/graph_matrix_drawer.h"
 #include "matrix_group.h"
+#include "random_generator/random_generator.h"
 #include "serializers/serializers.h"
 #include "swap_decorator.h"
 
@@ -392,9 +395,100 @@ void Practice5Render() {
     ImGui::End();
 }
 
+struct PackForModify {
+    size_t row;
+    size_t col;
+    double value;
+};
+
+PackForModify ForRandomModify(MatrixPtr<double> matrix) {
+    PackForModify answer;
+    auto idxs = RandomSwap(matrix->Rows(), matrix->Columns());
+    answer.row = idxs.first.first;
+    answer.col = idxs.second.first;
+    RandomGenerator<double> gena;
+    answer.value = gena.Generate(0, 99);
+    return answer;
+}
+
+void Practice6Render() {
+    static bool init_flag = false;
+    static bool border_option = false;
+    static SerializerPtr<double> serializer =
+        std::make_shared<SparseSerializer<double>>();
+
+    static MatrixPtr<double> matrix = std::make_shared<Matrix<double>>(20, 10);
+
+    static DrawerPtr drawer = nullptr;
+    static GrapicalMatrixDrawer<double> graph_drawer;
+    static ConsoleMatrixDrawer<double> console_drawer;
+
+    static ImVec2 window_pos;
+    static ImVec2 window_size;
+
+    size_t changes_count = 0;
+
+    ImGui::Begin("User interface for LAB5");
+
+    if (!init_flag) {
+        InitAppCommand init_cmd(matrix);
+        init_cmd.Execute();
+        init_flag = true;
+    }
+
+    window_pos = ImGui::GetWindowPos();
+    window_size = ImGui::GetWindowSize();
+    if (ImGui::Button(" Modify\n matrix", ImVec2(120, 36))) {
+        ++changes_count;
+        PackForModify pack(ForRandomModify(matrix));
+        SetMatrixValueCommand set1(matrix, pack.row, pack.col, pack.value);
+        pack = ForRandomModify(matrix);
+        SetMatrixValueCommand set2(matrix, pack.row, pack.col, pack.value);
+        pack = ForRandomModify(matrix);
+        SetMatrixValueCommand set3(matrix, pack.row, pack.col, pack.value);
+        pack = ForRandomModify(matrix);
+        SetMatrixValueCommand set4(matrix, pack.row, pack.col, pack.value);
+        set1.Execute();
+        set2.Execute();
+        set3.Execute();
+        set4.Execute();
+    }
+
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    ImGui::SameLine();
+    if (ImGui::Button("Undo", ImVec2(120, 36))) {
+        ++changes_count;
+        CommandManager::Instance()->UndoLastCmd();
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Button(" Border\n Option", ImVec2(120, 36))) {
+        border_option = !border_option;
+        ++changes_count;
+    }
+
+    if (border_option) {
+        drawer = DrawerPtr(
+            new DefaultDrawer(draw_list, std::cout,
+                              ImVec2(window_pos.x + 12, window_pos.y + 84)));
+    } else {
+        drawer = DrawerPtr(
+            new LazyDrawer(draw_list, std::cout,
+                           ImVec2(window_pos.x + 12, window_pos.y + 84)));
+    }
+
+    graph_drawer.DrawMatrix(matrix, drawer, serializer);
+
+    if (changes_count != 0) {
+        std::system("clear");
+        console_drawer.DrawMatrix(matrix, drawer, serializer);
+    }
+    ImGui::End();
+}
+
 int main() {
     App app(1280, 720, "Software Design Patterns Labs");
-    app.SetRenderCallback(Practice5Render<int>);
+    app.SetRenderCallback(Practice6Render);
     app.Run();
     return 0;
 }
