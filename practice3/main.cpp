@@ -295,7 +295,6 @@ void Practice5Render() {
         MatrixPtr<T> matrix = GetGroupOfMatr<T, Matrix<T>>();
         MatrixInitializer::FillMatrix<T>(
             matrix, matrix->Rows() * matrix->Columns(), 9000);
-        // dense_matrix = std::make_shared<SwapDecorator<T>>(matrix);
         dense_matrix = matrix;
         ++changes_count;
     }
@@ -305,7 +304,6 @@ void Practice5Render() {
         MatrixPtr<T> matrix = GetGroupOfMatr<T, SparseMatrix<T>>();
         MatrixInitializer::FillMatrix<T>(
             matrix, matrix->Rows() * matrix->Columns(), 9000);
-        // sparse_matrix = std::make_shared<SwapDecorator<T>>(matrix);
         sparse_matrix = matrix;
         ++changes_count;
     }
@@ -440,18 +438,11 @@ void Practice6Render() {
     window_size = ImGui::GetWindowSize();
     if (ImGui::Button(" Modify\n matrix", ImVec2(120, 36))) {
         ++changes_count;
-        PackForModify pack(ForRandomModify(matrix));
-        SetMatrixValueCommand set1(matrix, pack.row, pack.col, pack.value);
-        pack = ForRandomModify(matrix);
-        SetMatrixValueCommand set2(matrix, pack.row, pack.col, pack.value);
-        pack = ForRandomModify(matrix);
-        SetMatrixValueCommand set3(matrix, pack.row, pack.col, pack.value);
-        pack = ForRandomModify(matrix);
-        SetMatrixValueCommand set4(matrix, pack.row, pack.col, pack.value);
-        set1.Execute();
-        set2.Execute();
-        set3.Execute();
-        set4.Execute();
+        for (size_t i = 0; i < 10; ++i) {
+            PackForModify pack(ForRandomModify(matrix));
+            SetMatrixValueCommand set(matrix, pack.row, pack.col, pack.value);
+            set.Execute();
+        }
     }
 
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
